@@ -1,48 +1,36 @@
+// Pure function - testable
+    const isPalindrome = str => {
+      const cleanStr = str.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+      const reversed = [...cleanStr].reverse().join('');
+      return cleanStr === reversed;
+    };
 
-    let inputField = document.getElementById("text-input");
-    let button = document.getElementById("check-btn");
-    let result = document.getElementById("result");
-    function emptyFieldChecker() {
-      if (inputField.value === '') {
-        alert('Please input a value');
+    // UI Utility
+    const updateResult = (message, className) => {
+      result.textContent = message;
+      result.className = '';
+      result.classList.add(className, 'visible');
+    };
+
+    // Main handler
+    const checkPalindromeHandler = () => {
+      const input = inputField.value.trim();
+      if (!input) {
+        updateResult('Please input a value', 'error');
+        return;
       }
-      else {
-        palindrome();
-      }
-    }
-    button.addEventListener("click", emptyFieldChecker);
+      const isPal = isPalindrome(input);
+      updateResult(`"${input}" is ${isPal ? '' : 'not '}a palindrome`, isPal ? 'palindrome' : 'not-palindrome');
+      inputField.value = '';
+    };
 
-    function palindrome() {
+    // DOM Setup
+    const inputField = document.getElementById('text-input');
+    const checkButton = document.getElementById('check-btn');
+    const result = document.getElementById('result');
 
-      // get the original input
-      let originalInput = inputField.value;
-
-      // Clean the Input from non-alphanumeric
-      let cleanInput = originalInput.replace(/[^a-zA-Z0-9]/g, '');
-      cleanInput = cleanInput.toLowerCase();
-
-      // convert input string to Array
-      let InputArray = cleanInput.split("");
-
-      // reverse the array then convert to string
-      let reverseTheInput = InputArray.reverse().join('');
-
-      if (cleanInput === reverseTheInput) {
-        result.textContent = `${originalInput} is a palindrome`;
-        inputField.value = '';
-        result.classList.add("palindrome", "visible");
-        result.classList.remove("not-palindrome");
-      }
-      else {
-        result.textContent = `${originalInput} is not a palindrome`;
-        inputField.value = '';
-        result.classList.add("not-palindrome", "visible");
-        result.classList.remove("palindrome");
-      }
-    }
-inputField.addEventListener('keydown', cleanInputField);
-function cleanInputField(e){
-  if(e.key === 'Enter'){
-    emptyFieldChecker();
-  }
-}
+    checkButton.addEventListener('click', checkPalindromeHandler);
+    inputField.addEventListener('keydown', e => {
+      if (e.key === 'Enter') checkPalindromeHandler();
+    });
+ 
